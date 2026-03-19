@@ -112,9 +112,8 @@ class HandDetector:
         return length, (x1, y1, x2, y2, cx, cy)
 
 
-# ────────────────────────────────────────────────
-#  DRAWING HELPERS
-# ────────────────────────────────────────────────
+
+
 
 def draw_label(frame, text, pos, color=(255, 255, 255), scale=0.55, thickness=1):
     x, y = pos
@@ -138,9 +137,6 @@ def px_dist(p1, p2):
     return int(math.hypot(p2[0] - p1[0], p2[1] - p1[1]))
 
 
-# ────────────────────────────────────────────────
-#  ANATOMICAL REGIONS
-# ────────────────────────────────────────────────
 
 # MediaPipe Pose landmark indices
 NOSE         = 0
@@ -217,9 +213,7 @@ def detect_anatomy(frame, pose_results, face_results):
     neck_mid = ((l_sho[0] + r_sho[0]) // 2, (l_sho[1] + r_sho[1]) // 2)
     hip_mid  = ((l_hip[0] + r_hip[0]) // 2, (l_hip[1] + r_hip[1]) // 2)
 
-    # ════════════════════════════
-    #  1. HEAD
-    # ════════════════════════════
+ 
     cv2.circle(frame, nose, 12, C_HEAD, cv2.FILLED)
     cv2.circle(frame, nose, 14, C_HEAD, 1)
     draw_joint(frame, l_eye, C_HEAD, 4)
@@ -235,18 +229,14 @@ def detect_anatomy(frame, pose_results, face_results):
                (nose[0] + 16, nose[1] + 14), C_HEAD, 0.45)
     data["head"] = nose
 
-    # ════════════════════════════
-    #  2. NECK
-    # ════════════════════════════
+
     draw_bone(frame, nose, neck_mid, C_NECK, 2)
     draw_joint(frame, neck_mid, C_NECK, 5)
     neck_len = px_dist(nose, neck_mid)
     draw_label(frame, f"NECK  {neck_len}px",
                (neck_mid[0] + 10, neck_mid[1]), C_NECK)
 
-    # ════════════════════════════
-    #  3. SHOULDERS
-    # ════════════════════════════
+
     draw_bone(frame, l_sho, r_sho, C_SHOULDER, 3)
     draw_joint(frame, l_sho, C_SHOULDER, 7)
     draw_joint(frame, r_sho, C_SHOULDER, 7)
@@ -256,9 +246,6 @@ def detect_anatomy(frame, pose_results, face_results):
     draw_label(frame, "R.Shoulder", (r_sho[0] - 20, r_sho[1] - 14), C_SHOULDER, 0.45)
     draw_label(frame, "L.Shoulder", (l_sho[0] + 5,  l_sho[1] - 14), C_SHOULDER, 0.45)
 
-    # ════════════════════════════
-    #  4. RIGHT ARM  (appears on LEFT of mirrored frame)
-    # ════════════════════════════
     draw_bone(frame, r_sho, r_elb, C_ARM_R, 3)
     draw_bone(frame, r_elb, r_wri, C_ARM_R, 3)
     draw_joint(frame, r_elb, C_ARM_R, 6)
@@ -268,9 +255,6 @@ def detect_anatomy(frame, pose_results, face_results):
     draw_label(frame, f"R.Arm  U:{upper_r} L:{lower_r}px",
                (r_elb[0] - 10, r_elb[1] + 20), C_ARM_R, 0.48)
 
-    # ════════════════════════════
-    #  5. LEFT ARM
-    # ════════════════════════════
     draw_bone(frame, l_sho, l_elb, C_ARM_L, 3)
     draw_bone(frame, l_elb, l_wri, C_ARM_L, 3)
     draw_joint(frame, l_elb, C_ARM_L, 6)
@@ -280,18 +264,13 @@ def detect_anatomy(frame, pose_results, face_results):
     draw_label(frame, f"L.Arm  U:{upper_l} L:{lower_l}px",
                (l_elb[0] + 10, l_elb[1] + 20), C_ARM_L, 0.48)
 
-    # ════════════════════════════
-    #  6. SPINE
-    # ════════════════════════════
     draw_bone(frame, neck_mid, hip_mid, C_SPINE, 3)
     draw_joint(frame, hip_mid, C_SPINE, 6)
     spine_len = px_dist(neck_mid, hip_mid)
     draw_label(frame, f"SPINE  {spine_len}px",
                (hip_mid[0] + 10, (neck_mid[1] + hip_mid[1]) // 2), C_SPINE)
 
-    # ════════════════════════════
-    #  7. HIPS
-    # ════════════════════════════
+
     draw_bone(frame, l_hip, r_hip, C_HIP, 3)
     draw_joint(frame, l_hip, C_HIP, 7)
     draw_joint(frame, r_hip, C_HIP, 7)
@@ -301,9 +280,7 @@ def detect_anatomy(frame, pose_results, face_results):
     draw_label(frame, "R.Hip", (r_hip[0] - 10, r_hip[1] + 18), C_HIP, 0.45)
     draw_label(frame, "L.Hip", (l_hip[0] + 5,  l_hip[1] + 18), C_HIP, 0.45)
 
-    # ════════════════════════════
-    #  8. RIGHT LEG
-    # ════════════════════════════
+
     draw_bone(frame, r_hip, r_kne, C_LEG_R, 3)
     draw_bone(frame, r_kne, r_ank, C_LEG_R, 3)
     draw_joint(frame, r_kne, C_LEG_R, 6)
@@ -313,9 +290,7 @@ def detect_anatomy(frame, pose_results, face_results):
     draw_label(frame, f"R.Leg  T:{thigh_r} S:{shin_r}px",
                (r_kne[0] - 10, r_kne[1] + 20), C_LEG_R, 0.48)
 
-    # ════════════════════════════
-    #  9. LEFT LEG
-    # ════════════════════════════
+
     draw_bone(frame, l_hip, l_kne, C_LEG_L, 3)
     draw_bone(frame, l_kne, l_ank, C_LEG_L, 3)
     draw_joint(frame, l_kne, C_LEG_L, 6)
@@ -325,9 +300,7 @@ def detect_anatomy(frame, pose_results, face_results):
     draw_label(frame, f"L.Leg  T:{thigh_l} S:{shin_l}px",
                (l_kne[0] + 10, l_kne[1] + 20), C_LEG_L, 0.48)
 
-    # ════════════════════════════
-    #  10. FACE MESH (optional)
-    # ════════════════════════════
+
     if face_results and face_results.multi_face_landmarks:
         mp_draw = mp.solutions.drawing_utils
         mp_draw_styles = mp.solutions.drawing_styles
@@ -399,9 +372,7 @@ def draw_hud(frame, fps, hands):
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1, cv2.LINE_AA)
 
 
-# ────────────────────────────────────────────────
-#  MAIN
-# ────────────────────────────────────────────────
+
 
 def main():
     cap      = cv2.VideoCapture(0)
