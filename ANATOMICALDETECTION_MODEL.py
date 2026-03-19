@@ -5,7 +5,6 @@ import math
 import time
 
 class HandDetector:
-    """Detects hands, classifies Left/Right, tracks finger states and distances."""
 
     def __init__(self, mode=False, maxHands=2, detectionCon=0.7, trackCon=0.7):
         self.mode        = mode
